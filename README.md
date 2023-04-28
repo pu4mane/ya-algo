@@ -9,7 +9,7 @@
 
 <details>
 <summary>
-  <b>Ближайший ноль (<a href="s1/s1t1.go">nearest_zero.py</a>)</b>
+  <b>Ближайший ноль (<a href="s1/s1t1.go">Ближайший ноль</a>)</b>
 </summary>
 
 #### Условие
@@ -61,7 +61,7 @@
 
 <details>
 <summary>
-  <b>Ловкость рук (<a href="s1/s1t2.go">juggle.py</a>)</b>
+  <b>Ловкость рук (<a href="s1/s1t2.go">Ловкость рук</a>)</b>
 </summary>
 
 #### Условие
