@@ -9,7 +9,7 @@
 
 <details>
 <summary>
-  <b>Ближайший ноль (<a href="s1/s1t1.go">Ближайший ноль</a>)</b>
+  <b>Ближайший ноль (<a href="s1/s1t1.go">s1t1.go</a>)</b>
 </summary>
 
 #### Условие
@@ -61,7 +61,7 @@
 
 <details>
 <summary>
-  <b>Ловкость рук (<a href="s1/s1t2.go">Ловкость рук</a>)</b>
+  <b>Ловкость рук (<a href="s1/s1t2.go">s1t2.go</a>)</b>
 </summary>
 
 #### Условие
