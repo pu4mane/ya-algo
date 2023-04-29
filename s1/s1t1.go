@@ -44,6 +44,9 @@ func main() {
 		if distanceNearestEmpty < distance[house] {
 			distance[house] = distanceNearestEmpty
 		}
+	}
+
+	for house := range distance {
 		writer.WriteString(strconv.Itoa(distance[house]) + " ")
 	}
 }
