@@ -1,4 +1,5 @@
 # data structures and algorithms
+![meme](materials/meme.jpg)
 Решение задач на языке Go
 
 ---
