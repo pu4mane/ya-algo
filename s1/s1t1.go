@@ -1,56 +1,61 @@
-// https://contest.yandex.ru/contest/22450/run-report/86674416/
+// https://contest.yandex.ru/contest/22450/run-report/86662738/
 
-// Алгоритм имеет сложность O(n), где n - количество элементов в матрице 4x4.
-// В алгоритме используется два вложенных цикла по 4 итерации каждый,
-// что даёт общее количество операций равное 4*4=16.
-// Далее один проход по массиву счетчиков длиной 10, что занимает константное время.
+// Алгоритм имеет сложность O(n), где n - количество домов на улице.
+// Алгоритм проходит по каждому дому на улице по два раза
+// (справа налево в первом цикле и в обратную сторону обновляя значения во втором),
+// выполняя константное количество операций для каждого дома.
 
-// Алгоритм использует фиксированное количество памяти для хранения счетчика и доски,
-// поэтому сложность по памяти постоянна и равна O(1).
+// По памяти алгоритм требует O(n), так как используется массив расстояний длиной n для хранения результатов.
 
 package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
+
+	nStr, _ := reader.ReadString('\n')
+	n, _ := strconv.Atoi(strings.TrimSpace(nStr))
+
+	streetStr, _ := reader.ReadString('\n')
+	streetStr = strings.TrimSpace(streetStr)
+	street := strings.Split(streetStr, " ")
+
 	writer := bufio.NewWriter(os.Stdout)
 	defer writer.Flush()
 
-	var k int
-	fmt.Fscanln(reader, &k)
+	distance := make([]int, n)
 
-	board := make([][]rune, 4)
-	for i := range board {
-		board[i] = make([]rune, 4)
+	distanceNearestEmpty := 1000001
+	for house := len(street) - 1; house >= 0; house-- {
+		c, _ := strconv.Atoi(street[house])
+		if c == 0 {
+			distanceNearestEmpty = 0
+		} else {
+			distanceNearestEmpty++
+		}
+		distance[house] = distanceNearestEmpty
 	}
 
-	for i := 0; i < 4; i++ {
-		inputStr, _ := reader.ReadString('\n')
-		for j, r := range inputStr[:len(inputStr)-1] {
-			board[i][j] = r
+	distanceNearestEmpty = 1000001
+	for house := range street {
+		c, _ := strconv.Atoi(street[house])
+		if c == 0 {
+			distanceNearestEmpty = 0
+		} else {
+			distanceNearestEmpty++
+		}
+		if distanceNearestEmpty < distance[house] {
+			distance[house] = distanceNearestEmpty
 		}
 	}
 
-	points := 0
-	counter := make([]int, 10)
-	for _, row := range board {
-		for _, value := range row {
-			if value != '.' {
-				counter[value-'0']++
-			}
-		}
+	for house := range distance {
+		writer.WriteString(strconv.Itoa(distance[house]) + " ")
 	}
-
-	for _, value := range counter {
-		if value > 0 && value <= k+k {
-			points++
-		}
-	}
-
-	fmt.Fprintln(writer, points)
 }
