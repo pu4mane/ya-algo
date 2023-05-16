@@ -1,3 +1,22 @@
+/*
+https://contest.yandex.ru/contest/22781/run-report/87361848/
+-- ПРИНЦИП РАБОТЫ --
+Я реализовал калькулятор на стеке.
+Функция принимает на вход строку - выражение, записанное в обратной польской нотации и парсит ее на слайс токенов(операнды и операторы)
+Далее проходим по слайсу токенов, если встречается операнд, то помещаем его в вершину стека,
+если встречается оператор, то из вершины стека извлекаются два операнда и производится операция над ними используя текущий оператор.
+Результат выполненной операции помещается на вершину стека.
+После обработки входного набора токенов результат вычисления выражения находится в вершине стека - его мы и выводим.
+
+-- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+Проход по слайсу токенов стоит О(n), n - колличество токенов.
+Добавление и извлечение из стека стоит O(1).
+Временная сложность будет равна O(n).
+
+-- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+Пространственная сложность будет равна 0(n), n - колличество токенов, каждый токен занимает k памяти.
+*/
+
 package main
 
 import (
@@ -18,11 +37,7 @@ func NewStack() *Stack {
 	return &Stack{
 		stack: make([]int, 0),
 		size:  0,
-	}
-}
-
-func (s *Stack) IsEmpty() bool {
-	return s.size == 0
+		}
 }
 
 func (s *Stack) Push(item int) {
@@ -31,7 +46,7 @@ func (s *Stack) Push(item int) {
 }
 
 func (s *Stack) Pop() (int, bool) {
-	if s.IsEmpty() {
+	if s.size == 0 {
 		return 0, false
 	}
 	itemIdx := s.size - 1
@@ -49,22 +64,20 @@ func Calc(expression string) int {
 			stack.Push(num)
 		} else {
 			num1, _ := stack.Pop()
-			b := float64(num1)
 			num2, _ := stack.Pop()
-			a := float64(num2)
 			switch token {
 			case "+":
-				res := a + b
+				res := float64(num2) + float64(num1)
 				stack.Push(int(math.Floor(res)))
-			case "-":
-				res := a - b
-				stack.Push(int(math.Floor(res)))
-			case "*":
-				res := a * b
-				stack.Push(int(math.Floor(res)))
-			case "/":
-				res := a / b
-				stack.Push(int(math.Floor(res)))
+				case "-":
+					res := float64(num2) - float64(num1)
+					stack.Push(int(math.Floor(res)))
+					case "*":
+						res := float64(num2) * float64(num1)
+						stack.Push(int(math.Floor(res)))
+						case "/":
+							res := float64(num2) / float64(num1)
+							stack.Push(int(math.Floor(res)))
 			}
 		}
 	}
