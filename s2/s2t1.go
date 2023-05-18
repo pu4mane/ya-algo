@@ -1,5 +1,5 @@
 /*
-https://contest.yandex.ru/contest/22781/run-report/87028271/
+https://contest.yandex.ru/contest/22781/run-report/87459910/
 -- ПРИНЦИП РАБОТЫ --
 Я реализовал дек используя кольцевой буфер.
 Создаем структуру Deque. У этой структуры будут поля:
@@ -48,51 +48,61 @@ func NewDeque(m int) *Deque {
 		front: 0,
 		back:  0,
 		size:  0,
-		}
+	}
+}
+
+func (d *Deque) CaclNextIdx(idx int) (newIdx int) {
+	newIdx = (idx + 1) % d.maxM
+	return newIdx
+}
+
+func (d *Deque) CaclPrevIdx(idx int) (newIdx int) {
+	newIdx = (idx - 1 + d.maxM) % d.maxM
+	return newIdx
 }
 
 func (d *Deque) PushBack(item int) bool {
 	if d.size == d.maxM {
 		return false
-	} else {
-		d.deque[d.back] = item
-		d.back = (d.back + 1) % d.maxM
-		d.size++
-		return true
 	}
+	d.deque[d.back] = item
+	d.back = d.CaclNextIdx(d.back)
+	d.size++
+	return true
 }
 
 func (d *Deque) PushFront(item int) bool {
 	if d.size == d.maxM {
 		return false
-	} else {
-		d.front = (d.front - 1 + d.maxM) % d.maxM
-		d.deque[d.front] = item
-		d.size++
-		return true
 	}
+	d.front = d.CaclPrevIdx(d.front)
+	d.deque[d.front] = item
+	d.size++
+	return true
 }
 
 func (d *Deque) PopFront() (int, bool) {
 	if d.size == 0 {
 		return 0, false
-	} else {
-		item := d.deque[d.front]
-		d.front = (d.front + 1) % d.maxM
-		d.size--
-		return item, true
 	}
+	item := d.deque[d.front]
+	d.front = d.CaclNextIdx(d.front)
+	d.size--
+	return item, true
 }
 
 func (d *Deque) PopBack() (int, bool) {
 	if d.size == 0 {
 		return 0, false
-	} else {
-		d.back = (d.back - 1 + d.maxM) % d.maxM
-		item := d.deque[d.back]
-		d.size--
-		return item, true
 	}
+	d.back = d.CaclPrevIdx(d.back)
+	item := d.deque[d.back]
+	d.size--
+	return item, true
+}
+
+func PrintError() {
+	fmt.Println("error")
 }
 
 func RunCommands(commands []string, deque *Deque) {
@@ -102,27 +112,27 @@ func RunCommands(commands []string, deque *Deque) {
 		case "push_back":
 			item, _ := strconv.Atoi(cmd[1])
 			if !deque.PushBack(item) {
-				fmt.Println("error")
+				PrintError()
 			}
-			case "push_front":
-				item, _ := strconv.Atoi(cmd[1])
-				if !deque.PushFront(item) {
-					fmt.Println("error")
-				}
-				case "pop_front":
-					item, ok := deque.PopFront()
-					if ok {
-						fmt.Println(item)
-					} else {
-						fmt.Println("error")
-					}
-					case "pop_back":
-						item, ok := deque.PopBack()
-						if ok {
-							fmt.Println(item)
-						} else {
-							fmt.Println("error")
-						}
+		case "push_front":
+			item, _ := strconv.Atoi(cmd[1])
+			if !deque.PushFront(item) {
+				PrintError()
+			}
+		case "pop_front":
+			item, ok := deque.PopFront()
+			if ok {
+				fmt.Println(item)
+			} else {
+				PrintError()
+			}
+		case "pop_back":
+			item, ok := deque.PopBack()
+			if ok {
+				fmt.Println(item)
+			} else {
+				PrintError()
+			}
 		}
 	}
 }

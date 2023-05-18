@@ -1,5 +1,5 @@
 /*
-https://contest.yandex.ru/contest/22781/run-report/87361848/
+https://contest.yandex.ru/contest/22781/run-report/87457479/
 -- ПРИНЦИП РАБОТЫ --
 Я реализовал калькулятор на стеке.
 Функция принимает на вход строку - выражение, записанное в обратной польской нотации и парсит ее на слайс токенов(операнды и операторы)
@@ -37,7 +37,7 @@ func NewStack() *Stack {
 	return &Stack{
 		stack: make([]int, 0),
 		size:  0,
-		}
+	}
 }
 
 func (s *Stack) Push(item int) {
@@ -57,28 +57,21 @@ func (s *Stack) Pop() (int, bool) {
 }
 
 func Calc(expression string) int {
+	m := map[string]func(int, int) int{
+		"+": func(a int, b int) int { return b + a },
+		"-": func(a int, b int) int { return b - a },
+		"*": func(a int, b int) int { return b * a },
+		"/": func(a int, b int) int { return int(math.Floor(float64(b) / float64(a))) },
+	}
 	stack := NewStack()
 	tokens := strings.Split(expression, " ")
 	for _, token := range tokens {
 		if num, err := strconv.Atoi(token); err == nil {
 			stack.Push(num)
-		} else {
+		} else if operation, ok := m[token]; ok && stack.size > 1 {
 			num1, _ := stack.Pop()
 			num2, _ := stack.Pop()
-			switch token {
-			case "+":
-				res := float64(num2) + float64(num1)
-				stack.Push(int(math.Floor(res)))
-				case "-":
-					res := float64(num2) - float64(num1)
-					stack.Push(int(math.Floor(res)))
-					case "*":
-						res := float64(num2) * float64(num1)
-						stack.Push(int(math.Floor(res)))
-						case "/":
-							res := float64(num2) / float64(num1)
-							stack.Push(int(math.Floor(res)))
-			}
+			stack.Push(operation(num1, num2))
 		}
 	}
 	result, _ := stack.Pop()
