@@ -57,7 +57,7 @@ func (s *Stack) Pop() (int, bool) {
 }
 
 func Calc(expression string) int {
-	m := map[string]func(int, int) int{
+	m := map[string]func(a int, b int) int{
 		"+": func(a int, b int) int { return b + a },
 		"-": func(a int, b int) int { return b - a },
 		"*": func(a int, b int) int { return b * a },
@@ -69,9 +69,9 @@ func Calc(expression string) int {
 		if num, err := strconv.Atoi(token); err == nil {
 			stack.Push(num)
 		} else if operation, ok := m[token]; ok && stack.size > 1 {
-			num1, _ := stack.Pop()
-			num2, _ := stack.Pop()
-			stack.Push(operation(num1, num2))
+			a, _ := stack.Pop()
+			b, _ := stack.Pop()
+			stack.Push(operation(a, b))
 		}
 	}
 	result, _ := stack.Pop()
