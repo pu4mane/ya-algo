@@ -1,3 +1,22 @@
+/*
+https://contest.yandex.ru/contest/22781/run-report/87457479/
+-- ПРИНЦИП РАБОТЫ --
+Я реализовал калькулятор на стеке.
+Функция принимает на вход строку - выражение, записанное в обратной польской нотации и парсит ее на слайс токенов(операнды и операторы)
+Далее проходим по слайсу токенов, если встречается операнд, то помещаем его в вершину стека,
+если встречается оператор, то из вершины стека извлекаются два операнда и производится операция над ними используя текущий оператор.
+Результат выполненной операции помещается на вершину стека.
+После обработки входного набора токенов результат вычисления выражения находится в вершине стека - его мы и выводим.
+
+-- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+Проход по слайсу токенов стоит О(n), n - колличество токенов.
+Добавление и извлечение из стека стоит O(1).
+Временная сложность будет равна O(n).
+
+-- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+Пространственная сложность будет равна 0(n), n - колличество токенов, каждый токен занимает k памяти.
+*/
+
 package main
 
 import (
@@ -21,17 +40,13 @@ func NewStack() *Stack {
 	}
 }
 
-func (s *Stack) IsEmpty() bool {
-	return s.size == 0
-}
-
 func (s *Stack) Push(item int) {
 	s.stack = append(s.stack, item)
 	s.size++
 }
 
 func (s *Stack) Pop() (int, bool) {
-	if s.IsEmpty() {
+	if s.size == 0 {
 		return 0, false
 	}
 	itemIdx := s.size - 1
@@ -42,30 +57,21 @@ func (s *Stack) Pop() (int, bool) {
 }
 
 func Calc(expression string) int {
+	m := map[string]func(a int, b int) int{
+		"+": func(a int, b int) int { return b + a },
+		"-": func(a int, b int) int { return b - a },
+		"*": func(a int, b int) int { return b * a },
+		"/": func(a int, b int) int { return int(math.Floor(float64(b) / float64(a))) },
+	}
 	stack := NewStack()
 	tokens := strings.Split(expression, " ")
 	for _, token := range tokens {
 		if num, err := strconv.Atoi(token); err == nil {
 			stack.Push(num)
-		} else {
-			num1, _ := stack.Pop()
-			b := float64(num1)
-			num2, _ := stack.Pop()
-			a := float64(num2)
-			switch token {
-			case "+":
-				res := a + b
-				stack.Push(int(math.Floor(res)))
-			case "-":
-				res := a - b
-				stack.Push(int(math.Floor(res)))
-			case "*":
-				res := a * b
-				stack.Push(int(math.Floor(res)))
-			case "/":
-				res := a / b
-				stack.Push(int(math.Floor(res)))
-			}
+		} else if operation, ok := m[token]; ok && stack.size > 1 {
+			a, _ := stack.Pop()
+			b, _ := stack.Pop()
+			stack.Push(operation(a, b))
 		}
 	}
 	result, _ := stack.Pop()
