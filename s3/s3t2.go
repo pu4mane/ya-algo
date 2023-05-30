@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 type Participant struct {
@@ -11,21 +13,26 @@ type Participant struct {
 }
 
 func main() {
+	reader := bufio.NewReader(os.Stdin)
+
 	var n int
-	fmt.Scanln(&n)
+	fmt.Fscanln(reader, &n)
 
 	participants := make([]Participant, n)
 	for i := 0; i < n; i++ {
 		var login string
 		var solved, penalty int
-		fmt.Scanln(&login, &solved, &penalty)
+		fmt.Fscanln(reader, &login, &solved, &penalty)
 		participants[i] = Participant{Login: login, Solved: solved, Penalty: penalty}
 	}
 
 	quickSort(participants, 0, len(participants)-1)
 
+	writer := bufio.NewWriter(os.Stdout)
+	defer writer.Flush()
+
 	for _, participant := range participants {
-		fmt.Println(participant.Login)
+		fmt.Fprintln(writer, participant.Login)
 	}
 }
 
